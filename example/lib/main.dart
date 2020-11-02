@@ -1,4 +1,5 @@
 import 'package:cached_network_image/cached_network_image.dart';
+import 'package:example/display_gesture_widget.dart';
 import 'package:flutter/cupertino.dart';
 import 'package:flutter/material.dart';
 import 'package:interactiveviewer_gallery/hero_dialog_route.dart';
@@ -14,20 +15,12 @@ class MyApp extends StatelessWidget {
   Widget build(BuildContext context) {
     return MaterialApp(
       title: 'InteraGallery Demo',
-      theme: ThemeData(
-        primarySwatch: Colors.blue,
-        visualDensity: VisualDensity.adaptivePlatformDensity,
+      // DisplayGesture is just debug, please remove it when use
+      home: DisplayGesture(
+        child: InteractiveviewDemoPage(),
       ),
-      home: InteractiveviewDemoPage(),
     );
   }
-}
-
-class InteractiveviewDemoPage extends StatefulWidget {
-  static final String sName = "InteractiveviewDemoPage";
-
-  @override
-  _InteractiveviewDemoPageState createState() => _InteractiveviewDemoPageState();
 }
 
 class DemoSourceEntity {
@@ -36,6 +29,13 @@ class DemoSourceEntity {
   String type;
 
   DemoSourceEntity(this.type, this.url, {this.previewUrl});
+}
+
+class InteractiveviewDemoPage extends StatefulWidget {
+  static final String sName = "/";
+
+  @override
+  _InteractiveviewDemoPageState createState() => _InteractiveviewDemoPageState();
 }
 
 class _InteractiveviewDemoPageState extends State<InteractiveviewDemoPage> {
@@ -96,11 +96,14 @@ class _InteractiveviewDemoPageState extends State<InteractiveviewDemoPage> {
   void _openGallery(DemoSourceEntity source) {
     Navigator.of(context).push(
       HeroDialogRoute<void>(
-        builder: (BuildContext context) => InteractiveviewerGallery<DemoSourceEntity>(
-          sources: sourceList,
-          initIndex: sourceList.indexOf(source),
-          itemBuilder: itemBuilder,
-          heroTagBuilder: (int index) => sourceList[index].url,
+        // DisplayGesture is just debug, please remove it when use
+        builder: (BuildContext context) => DisplayGesture(
+          child: InteractiveviewerGallery<DemoSourceEntity>(
+            sources: sourceList,
+            initIndex: sourceList.indexOf(source),
+            itemBuilder: itemBuilder,
+            heroTagBuilder: (int index) => sourceList[index].url,
+          ),
         ),
       ),
     );
