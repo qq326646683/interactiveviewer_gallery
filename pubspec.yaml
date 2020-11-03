@@ -1,8 +1,8 @@
 name: interactiveviewer_gallery
 description: Image and video preview component that supports zoom and drag
-version: 0.1.0
-author:
-homepage:
+version: 0.2.0
+author: qq326646683<326646683@qq.com>
+homepage: https://github.com/qq326646683/interactiveviewer_gallery
 
 environment:
   sdk: ">=2.7.0 <3.0.0"
