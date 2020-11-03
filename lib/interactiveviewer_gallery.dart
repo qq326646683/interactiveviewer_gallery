@@ -235,15 +235,15 @@ class _TweetSourceGalleryState extends State<InteractiveviewerGallery> with Sing
     double targetScale = widget.minScale;
 
     if (currentScale <= widget.minScale) {
-      targetScale = widget.maxScale;
+      targetScale = widget.maxScale * 0.6;
     }
 
-    double offSetX = targetScale == 1.0 ? 0.0 : -(_doubleTapLocalPosition.dx / MediaQuery.of(context).size.width) * (targetScale * 1.3 * MediaQuery.of(context).size.width) + MediaQuery.of(context).size.width;
+    double offSetX = targetScale == 1.0 ? 0.0 : -(_doubleTapLocalPosition.dx / MediaQuery.of(context).size.width) * (targetScale * 1.7 * MediaQuery.of(context).size.width) + MediaQuery.of(context).size.width;
     if (offSetX > 0) offSetX = 0.0;
     double offSetXBoundary = (1 - targetScale) * MediaQuery.of(context).size.width;
     if (offSetX < offSetXBoundary) offSetX = offSetXBoundary;
 
-    double offSetY = targetScale == 1.0 ? 0.0 : -(_doubleTapLocalPosition.dy / MediaQuery.of(context).size.height) * (targetScale * 1.3 * MediaQuery.of(context).size.height) + MediaQuery.of(context).size.height;
+    double offSetY = targetScale == 1.0 ? 0.0 : -(_doubleTapLocalPosition.dy / MediaQuery.of(context).size.height) * (targetScale * 1.7 * MediaQuery.of(context).size.height) + MediaQuery.of(context).size.height;
     if (offSetY > 0) offSetY = 0.0;
     double offSetYBoundary = (1 - targetScale) * MediaQuery.of(context).size.height;
     if (offSetY < offSetYBoundary) offSetY = offSetYBoundary;
