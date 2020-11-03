@@ -24,11 +24,12 @@ class MyApp extends StatelessWidget {
 }
 
 class DemoSourceEntity {
+  int id;
   String url;
   String previewUrl;
   String type;
 
-  DemoSourceEntity(this.type, this.url, {this.previewUrl});
+  DemoSourceEntity(this.id, this.type, this.url, {this.previewUrl});
 }
 
 class InteractiveviewDemoPage extends StatefulWidget {
@@ -40,11 +41,12 @@ class InteractiveviewDemoPage extends StatefulWidget {
 
 class _InteractiveviewDemoPageState extends State<InteractiveviewDemoPage> {
   List<DemoSourceEntity> sourceList = [
-    DemoSourceEntity('image', 'http://file.jinxianyun.com/inter_05.jpg'),
-    DemoSourceEntity('image', 'http://file.jinxianyun.com/inter_02.jpg'),
-    DemoSourceEntity('image', 'http://file.jinxianyun.com/inter_03.gif'),
-    DemoSourceEntity('video', 'http://file.jinxianyun.com/inter_04.mp4', previewUrl: 'http://file.jinxianyun.com/inter_04_pre.png'),
-    DemoSourceEntity('video', 'http://file.jinxianyun.com/6438BF272694486859D5DE899DD2D823.mp4', previewUrl: 'http://file.jinxianyun.com/102.png'),
+    DemoSourceEntity(0, 'image', 'http://file.jinxianyun.com/inter_05.jpg'),
+    DemoSourceEntity(1, 'image', 'http://file.jinxianyun.com/inter_05.jpg'),
+    DemoSourceEntity(2, 'image', 'http://file.jinxianyun.com/inter_02.jpg'),
+    DemoSourceEntity(3, 'image', 'http://file.jinxianyun.com/inter_03.gif'),
+    DemoSourceEntity(4, 'video', 'http://file.jinxianyun.com/inter_04.mp4', previewUrl: 'http://file.jinxianyun.com/inter_04_pre.png'),
+    DemoSourceEntity(5, 'video', 'http://file.jinxianyun.com/6438BF272694486859D5DE899DD2D823.mp4', previewUrl: 'http://file.jinxianyun.com/102.png'),
   ];
 
   @override
@@ -64,7 +66,7 @@ class _InteractiveviewDemoPageState extends State<InteractiveviewDemoPage> {
 
   Widget _buildItem(DemoSourceEntity source) {
     return Hero(
-      tag: source.url,
+      tag: source.id,
       placeholderBuilder: (BuildContext context, Size heroSize, Widget child) {
         // keep building the image since the images can be visible in the
         // background of the image gallery
@@ -102,7 +104,6 @@ class _InteractiveviewDemoPageState extends State<InteractiveviewDemoPage> {
             sources: sourceList,
             initIndex: sourceList.indexOf(source),
             itemBuilder: itemBuilder,
-            heroTagBuilder: (int index) => sourceList[index].url,
           ),
         ),
       ),
@@ -113,26 +114,38 @@ class _InteractiveviewDemoPageState extends State<InteractiveviewDemoPage> {
     DemoSourceEntity sourceEntity = sourceList[index];
     if (sourceEntity.type == 'video') {
       return DemoVideoItem(
-        sourceEntity.url,
-        sourceEntity.previewUrl,
+        sourceEntity,
         isFocus: isFocus,
       );
     } else {
-      return DemoImageItem(sourceEntity.url);
+      return DemoImageItem(sourceEntity);
     }
   }
 }
 
 class DemoImageItem extends StatefulWidget {
-  final String url;
+  final DemoSourceEntity source;
 
-  DemoImageItem(this.url);
+  DemoImageItem(this.source);
 
   @override
   _DemoImageItemState createState() => _DemoImageItemState();
 }
 
-class _DemoImageItemState extends State<DemoImageItem> with AutomaticKeepAliveClientMixin<DemoImageItem> {
+class _DemoImageItemState extends State<DemoImageItem> {
+  @override
+  void initState() {
+    super.initState();
+    print('initState: ${widget.source.id}');
+
+  }
+
+  @override
+  void dispose() {
+    super.dispose();
+    print('dispose: ${widget.source.id}');
+  }
+
   @override
   Widget build(BuildContext context) {
     return Stack(
@@ -142,31 +155,31 @@ class _DemoImageItemState extends State<DemoImageItem> with AutomaticKeepAliveCl
         ),
         Align(
           alignment: Alignment.center,
-          child: CachedNetworkImage(
-            imageUrl: widget.url,
-            fit: BoxFit.contain,
+          child: Hero(
+            tag: widget.source.id,
+            child: CachedNetworkImage(
+              imageUrl: widget.source.url,
+              fit: BoxFit.contain,
+            ),
           ),
         ),
       ],
     );
   }
 
-  @override
-  bool get wantKeepAlive => true;
 }
 
 class DemoVideoItem extends StatefulWidget {
-  final String url;
-  final String preUrl;
+  final DemoSourceEntity source;
   final bool isFocus;
 
-  DemoVideoItem(this.url, this.preUrl, {this.isFocus});
+  DemoVideoItem(this.source, {this.isFocus});
 
   @override
   _DemoVideoItemState createState() => _DemoVideoItemState();
 }
 
-class _DemoVideoItemState extends State<DemoVideoItem> with AutomaticKeepAliveClientMixin<DemoVideoItem> {
+class _DemoVideoItemState extends State<DemoVideoItem> {
   VideoPlayerController _controller;
   VoidCallback listener;
   String localFileName;
@@ -183,11 +196,12 @@ class _DemoVideoItemState extends State<DemoVideoItem> with AutomaticKeepAliveCl
   @override
   void initState() {
     super.initState();
+    print('initState: ${widget.source.id}');
     init();
   }
 
   init() async {
-    _controller = VideoPlayerController.network(widget.url);
+    _controller = VideoPlayerController.network(widget.source.url);
     // loop play
     _controller.setLooping(true);
     await _controller.initialize();
@@ -198,6 +212,7 @@ class _DemoVideoItemState extends State<DemoVideoItem> with AutomaticKeepAliveCl
   @override
   void dispose() {
     super.dispose();
+    print('dispose: ${widget.source.id}');
     _controller.removeListener(listener);
     _controller?.pause();
     _controller?.dispose();
@@ -225,9 +240,12 @@ class _DemoVideoItemState extends State<DemoVideoItem> with AutomaticKeepAliveCl
                     _controller.value.isPlaying ? _controller.pause() : _controller.play();
                   });
                 },
-                child: AspectRatio(
-                  aspectRatio: _controller.value.aspectRatio,
-                  child: VideoPlayer(_controller),
+                child: Hero(
+                  tag: widget.source.id,
+                  child: AspectRatio(
+                    aspectRatio: _controller.value.aspectRatio,
+                    child: VideoPlayer(_controller),
+                  ),
                 ),
               ),
               _controller.value.isPlaying == true
@@ -244,7 +262,4 @@ class _DemoVideoItemState extends State<DemoVideoItem> with AutomaticKeepAliveCl
           )
         : Theme(data: ThemeData(cupertinoOverrideTheme: CupertinoThemeData(brightness: Brightness.dark)), child: CupertinoActivityIndicator(radius: 30));
   }
-
-  @override
-  bool get wantKeepAlive => true;
 }

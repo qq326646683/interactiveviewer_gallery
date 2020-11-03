@@ -22,7 +22,6 @@ class InteractiveviewerGallery<T> extends StatefulWidget {
     @required this.sources,
     @required this.initIndex,
     @required this.itemBuilder,
-    @required this.heroTagBuilder,
     this.maxScale = 2.5,
     this.minScale = 1.0,
   });
@@ -35,9 +34,6 @@ class InteractiveviewerGallery<T> extends StatefulWidget {
 
   /// The item content
   final IndexedFocusedWidgetBuilder itemBuilder;
-
-  /// return hero tag
-  final IndexedTagStringBuilder heroTagBuilder;
 
   final double maxScale;
 
@@ -71,7 +67,8 @@ class _TweetSourceGalleryState extends State<InteractiveviewerGallery> with Sing
   void initState() {
     super.initState();
 
-    _pageController = PageController(initialPage: widget.initIndex);
+    //todo
+    _pageController = PageController(initialPage: widget.initIndex, viewportFraction: 2);
 
     _transformationController = TransformationController();
 
@@ -187,11 +184,6 @@ class _TweetSourceGalleryState extends State<InteractiveviewerGallery> with Sing
     }
   }
 
-  /// The [FlightShuttleBuilder] for the hero widget.
-  ///
-  /// Since the source in the list can have a different box fit, this flight
-  /// shuttle builder is used to make sure the hero transitions properly.
-
   @override
   Widget build(BuildContext context) {
     return InteractiveViewerBoundary(
@@ -206,23 +198,22 @@ class _TweetSourceGalleryState extends State<InteractiveviewerGallery> with Sing
       child: CustomDismissible(
         onDismissed: () => Navigator.of(context).pop(),
         enabled: _enableDismiss,
-        child: Hero(
-          tag: widget.heroTagBuilder(currentIndex),
-          child: PageView.builder(
-            onPageChanged: _onPageChanged,
-            controller: _pageController,
-            physics: _enablePageView ? null : const NeverScrollableScrollPhysics(),
-            itemCount: widget.sources.length,
-            itemBuilder: (BuildContext context, int index) {
-              return GestureDetector(
-                onDoubleTapDown: (TapDownDetails details) {
-                  _doubleTapLocalPosition = details.localPosition;
-                },
-                onDoubleTap: onDoubleTap,
-                child: widget.itemBuilder(context, index, index == currentIndex),
-              );
-            },
-          ),
+        child: PageView.builder(
+          onPageChanged: _onPageChanged,
+          controller: _pageController,
+          physics: _enablePageView ? null : const NeverScrollableScrollPhysics(),
+          itemCount: widget.sources.length,
+          itemBuilder: (BuildContext context, int index) {
+            return GestureDetector(
+              onDoubleTapDown: (TapDownDetails details) {
+                _doubleTapLocalPosition = details.localPosition;
+              },
+              onDoubleTap: onDoubleTap,
+              child: widget.itemBuilder(context, index, index == currentIndex),
+            );
+          },
+          //todo
+//          allowImplicitScrolling: true,
         ),
       ),
     );
