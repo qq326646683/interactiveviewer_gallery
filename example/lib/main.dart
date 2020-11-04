@@ -41,7 +41,6 @@ class InteractiveviewDemoPage extends StatefulWidget {
 
 class _InteractiveviewDemoPageState extends State<InteractiveviewDemoPage> {
   List<DemoSourceEntity> sourceList = [
-    DemoSourceEntity(0, 'image', 'http://file.jinxianyun.com/inter_05.jpg'),
     DemoSourceEntity(1, 'image', 'http://file.jinxianyun.com/inter_05.jpg'),
     DemoSourceEntity(2, 'image', 'http://file.jinxianyun.com/inter_02.jpg'),
     DemoSourceEntity(3, 'image', 'http://file.jinxianyun.com/inter_03.gif'),

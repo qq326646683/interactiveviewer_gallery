@@ -67,8 +67,7 @@ class _TweetSourceGalleryState extends State<InteractiveviewerGallery> with Sing
   void initState() {
     super.initState();
 
-    //todo
-    _pageController = PageController(initialPage: widget.initIndex, viewportFraction: 2);
+    _pageController = PageController(initialPage: widget.initIndex);
 
     _transformationController = TransformationController();
 
@@ -212,8 +211,6 @@ class _TweetSourceGalleryState extends State<InteractiveviewerGallery> with Sing
               child: widget.itemBuilder(context, index, index == currentIndex),
             );
           },
-          //todo
-//          allowImplicitScrolling: true,
         ),
       ),
     );
