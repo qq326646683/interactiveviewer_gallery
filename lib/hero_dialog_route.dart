@@ -8,20 +8,14 @@ import 'package:flutter/material.dart';
 /// show a [Hero] animation.
 class HeroDialogRoute<T> extends PageRoute<T> {
   HeroDialogRoute({
-    @required this.builder,
+    required this.builder,
     this.onBackgroundTap,
   }) : super();
 
   final WidgetBuilder builder;
 
   /// Called when the background is tapped.
-  final VoidCallback onBackgroundTap;
-
-  /// The color tween used in the transition to animate the background color.
-  final ColorTween _colorTween = ColorTween(
-    begin: Colors.transparent,
-    end: Colors.black26,
-  );
+  final VoidCallback? onBackgroundTap;
 
   @override
   bool get opaque => false;
@@ -30,7 +24,7 @@ class HeroDialogRoute<T> extends PageRoute<T> {
   bool get barrierDismissible => true;
 
   @override
-  String get barrierLabel => null;
+  String? get barrierLabel => null;
 
   @override
   Duration get transitionDuration => const Duration(milliseconds: 300);
@@ -39,7 +33,7 @@ class HeroDialogRoute<T> extends PageRoute<T> {
   bool get maintainState => true;
 
   @override
-  Color get barrierColor => null;
+  Color? get barrierColor => null;
 
   @override
   Widget buildTransitions(
@@ -66,16 +60,6 @@ class HeroDialogRoute<T> extends PageRoute<T> {
       explicitChildNodes: true,
       child: child,
     );
-    assert(() {
-      if (child == null) {
-        throw FlutterError.fromParts(<DiagnosticsNode>[
-          ErrorSummary('The builder for route "${settings.name}" returned null.'),
-          ErrorDescription('Route builders must never return null.'),
-        ]);
-      }
-      return true;
-    }());
     return result;
-    return builder(context);
   }
 }

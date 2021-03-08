@@ -19,9 +19,9 @@ typedef IndexedTagStringBuilder = String Function(int index);
 
 class InteractiveviewerGallery<T> extends StatefulWidget {
   const InteractiveviewerGallery({
-    @required this.sources,
-    @required this.initIndex,
-    @required this.itemBuilder,
+    required this.sources,
+    required this.initIndex,
+    required this.itemBuilder,
     this.maxScale = 2.5,
     this.minScale = 1.0,
   });
@@ -44,13 +44,13 @@ class InteractiveviewerGallery<T> extends StatefulWidget {
 }
 
 class _TweetSourceGalleryState extends State<InteractiveviewerGallery> with SingleTickerProviderStateMixin {
-  PageController _pageController;
-  TransformationController _transformationController;
+  PageController? _pageController;
+  TransformationController? _transformationController;
 
   /// The controller to animate the transformation value of the
   /// [InteractiveViewer] when it should reset.
-  AnimationController _animationController;
-  Animation<Matrix4> _animation;
+  late AnimationController _animationController;
+  Animation<Matrix4>? _animation;
 
   /// `true` when an source is zoomed in and not at the at a horizontal boundary
   /// to disable the [PageView].
@@ -59,9 +59,9 @@ class _TweetSourceGalleryState extends State<InteractiveviewerGallery> with Sing
   /// `true` when an source is zoomed in to disable the [CustomDismissible].
   bool _enableDismiss = true;
 
-  Offset _doubleTapLocalPosition;
+  late Offset _doubleTapLocalPosition;
 
-  int currentIndex;
+  int? currentIndex;
 
   @override
   void initState() {
@@ -76,7 +76,7 @@ class _TweetSourceGalleryState extends State<InteractiveviewerGallery> with Sing
       duration: Duration(milliseconds: 300),
     )
       ..addListener(() {
-        _transformationController.value = _animation?.value ?? Matrix4.identity();
+        _transformationController!.value = _animation?.value ?? Matrix4.identity();
       })
       ..addStatusListener((AnimationStatus status) {
         if (status == AnimationStatus.completed && !_enableDismiss) {
@@ -91,7 +91,7 @@ class _TweetSourceGalleryState extends State<InteractiveviewerGallery> with Sing
 
   @override
   void dispose() {
-    _pageController.dispose();
+    _pageController!.dispose();
     _animationController.dispose();
 
     super.dispose();
@@ -134,7 +134,7 @@ class _TweetSourceGalleryState extends State<InteractiveviewerGallery> with Sing
   /// When the left boundary has been hit after scaling up the source, the page
   /// view swiping gets enabled if it has a page to swipe to.
   void _onLeftBoundaryHit() {
-    if (!_enablePageView && _pageController.page.floor() > 0) {
+    if (!_enablePageView && _pageController!.page!.floor() > 0) {
       setState(() {
         _enablePageView = true;
       });
@@ -144,7 +144,7 @@ class _TweetSourceGalleryState extends State<InteractiveviewerGallery> with Sing
   /// When the right boundary has been hit after scaling up the source, the page
   /// view swiping gets enabled if it has a page to swipe to.
   void _onRightBoundaryHit() {
-    if (!_enablePageView && _pageController.page.floor() < widget.sources.length - 1) {
+    if (!_enablePageView && _pageController!.page!.floor() < widget.sources.length - 1) {
       setState(() {
         _enablePageView = true;
       });
@@ -169,11 +169,11 @@ class _TweetSourceGalleryState extends State<InteractiveviewerGallery> with Sing
     setState(() {
       currentIndex = page;
     });
-    if (_transformationController.value != Matrix4.identity()) {
+    if (_transformationController!.value != Matrix4.identity()) {
       // animate the reset for the transformation of the interactive viewer
 
       _animation = Matrix4Tween(
-        begin: _transformationController.value,
+        begin: _transformationController!.value,
         end: Matrix4.identity(),
       ).animate(
         CurveTween(curve: Curves.easeOut).animate(_animationController),
@@ -217,7 +217,7 @@ class _TweetSourceGalleryState extends State<InteractiveviewerGallery> with Sing
   }
 
   onDoubleTap() {
-    Matrix4 matrix = _transformationController.value.clone();
+    Matrix4 matrix = _transformationController!.value.clone();
     double currentScale = matrix.row0.x;
 
     double targetScale = widget.minScale;
@@ -238,7 +238,7 @@ class _TweetSourceGalleryState extends State<InteractiveviewerGallery> with Sing
 
     matrix = Matrix4.fromList([targetScale, matrix.row1.x, matrix.row2.x, matrix.row3.x, matrix.row0.y, targetScale, matrix.row2.y, matrix.row3.y, matrix.row0.z, matrix.row1.z, targetScale, matrix.row3.z, offSetX, offSetY, matrix.row2.w, matrix.row3.w]);
     _animation = Matrix4Tween(
-      begin: _transformationController.value,
+      begin: _transformationController!.value,
       end: matrix,
     ).animate(
       CurveTween(curve: Curves.easeOut).animate(_animationController),

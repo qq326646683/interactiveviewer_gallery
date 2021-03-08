@@ -1,7 +1,7 @@
 import 'package:flutter/material.dart';
 
 class DisplayGesture extends StatefulWidget {
-  final Widget child;
+  final Widget? child;
 
   DisplayGesture({this.child});
 
@@ -39,7 +39,7 @@ class _DisplayGestureState extends State<DisplayGesture> {
       },
       child: Stack(
         children: [
-          widget.child,
+          widget.child!,
           ...displayModelList.map((PointerEvent e) {
             return Positioned(
               left: e.position.dx - 30,

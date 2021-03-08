@@ -26,7 +26,7 @@ class MyApp extends StatelessWidget {
 class DemoSourceEntity {
   int id;
   String url;
-  String previewUrl;
+  String? previewUrl;
   String type;
 
   DemoSourceEntity(this.id, this.type, this.url, {this.previewUrl});
@@ -36,7 +36,8 @@ class InteractiveviewDemoPage extends StatefulWidget {
   static final String sName = "/";
 
   @override
-  _InteractiveviewDemoPageState createState() => _InteractiveviewDemoPageState();
+  _InteractiveviewDemoPageState createState() =>
+      _InteractiveviewDemoPageState();
 }
 
 class _InteractiveviewDemoPageState extends State<InteractiveviewDemoPage> {
@@ -44,8 +45,11 @@ class _InteractiveviewDemoPageState extends State<InteractiveviewDemoPage> {
     DemoSourceEntity(1, 'image', 'http://file.jinxianyun.com/inter_05.jpg'),
     DemoSourceEntity(2, 'image', 'http://file.jinxianyun.com/inter_02.jpg'),
     DemoSourceEntity(3, 'image', 'http://file.jinxianyun.com/inter_03.gif'),
-    DemoSourceEntity(4, 'video', 'http://file.jinxianyun.com/inter_04.mp4', previewUrl: 'http://file.jinxianyun.com/inter_04_pre.png'),
-    DemoSourceEntity(5, 'video', 'http://file.jinxianyun.com/6438BF272694486859D5DE899DD2D823.mp4', previewUrl: 'http://file.jinxianyun.com/102.png'),
+    DemoSourceEntity(4, 'video', 'http://file.jinxianyun.com/inter_04.mp4',
+        previewUrl: 'http://file.jinxianyun.com/inter_04_pre.png'),
+    DemoSourceEntity(5, 'video',
+        'http://file.jinxianyun.com/6438BF272694486859D5DE899DD2D823.mp4',
+        previewUrl: 'http://file.jinxianyun.com/102.png'),
   ];
 
   @override
@@ -77,7 +81,7 @@ class _InteractiveviewDemoPageState extends State<InteractiveviewDemoPage> {
           alignment: Alignment.center,
           children: [
             CachedNetworkImage(
-              imageUrl: source.type == 'video' ? source.previewUrl : source.url,
+              imageUrl: source.type == 'video' ? source.previewUrl! : source.url,
               fit: BoxFit.cover,
               width: 100,
               height: 100,
@@ -136,7 +140,6 @@ class _DemoImageItemState extends State<DemoImageItem> {
   void initState() {
     super.initState();
     print('initState: ${widget.source.id}');
-
   }
 
   @override
@@ -165,12 +168,11 @@ class _DemoImageItemState extends State<DemoImageItem> {
       ],
     );
   }
-
 }
 
 class DemoVideoItem extends StatefulWidget {
   final DemoSourceEntity source;
-  final bool isFocus;
+  final bool? isFocus;
 
   DemoVideoItem(this.source, {this.isFocus});
 
@@ -179,9 +181,9 @@ class DemoVideoItem extends StatefulWidget {
 }
 
 class _DemoVideoItemState extends State<DemoVideoItem> {
-  VideoPlayerController _controller;
-  VoidCallback listener;
-  String localFileName;
+  VideoPlayerController? _controller;
+  late VoidCallback listener;
+  String? localFileName;
 
   _DemoVideoItemState() {
     listener = () {
@@ -202,17 +204,17 @@ class _DemoVideoItemState extends State<DemoVideoItem> {
   init() async {
     _controller = VideoPlayerController.network(widget.source.url);
     // loop play
-    _controller.setLooping(true);
-    await _controller.initialize();
+    _controller!.setLooping(true);
+    await _controller!.initialize();
     setState(() {});
-    _controller.addListener(listener);
+    _controller!.addListener(listener);
   }
 
   @override
   void dispose() {
     super.dispose();
     print('dispose: ${widget.source.id}');
-    _controller.removeListener(listener);
+    _controller!.removeListener(listener);
     _controller?.pause();
     _controller?.dispose();
   }
@@ -221,7 +223,7 @@ class _DemoVideoItemState extends State<DemoVideoItem> {
   void didUpdateWidget(covariant DemoVideoItem oldWidget) {
     super.didUpdateWidget(oldWidget);
 
-    if (oldWidget.isFocus && !widget.isFocus) {
+    if (oldWidget.isFocus! && !widget.isFocus!) {
       // pause
       _controller?.pause();
     }
@@ -229,25 +231,27 @@ class _DemoVideoItemState extends State<DemoVideoItem> {
 
   @override
   Widget build(BuildContext context) {
-    return _controller.value.initialized
+    return _controller!.value.isInitialized
         ? Stack(
             alignment: Alignment.center,
             children: [
               GestureDetector(
                 onTap: () {
                   setState(() {
-                    _controller.value.isPlaying ? _controller.pause() : _controller.play();
+                    _controller!.value.isPlaying
+                        ? _controller!.pause()
+                        : _controller!.play();
                   });
                 },
                 child: Hero(
                   tag: widget.source.id,
                   child: AspectRatio(
-                    aspectRatio: _controller.value.aspectRatio,
-                    child: VideoPlayer(_controller),
+                    aspectRatio: _controller!.value.aspectRatio,
+                    child: VideoPlayer(_controller!),
                   ),
                 ),
               ),
-              _controller.value.isPlaying == true
+              _controller!.value.isPlaying == true
                   ? SizedBox()
                   : IgnorePointer(
                       ignoring: true,
@@ -259,6 +263,10 @@ class _DemoVideoItemState extends State<DemoVideoItem> {
                     ),
             ],
           )
-        : Theme(data: ThemeData(cupertinoOverrideTheme: CupertinoThemeData(brightness: Brightness.dark)), child: CupertinoActivityIndicator(radius: 30));
+        : Theme(
+            data: ThemeData(
+                cupertinoOverrideTheme:
+                    CupertinoThemeData(brightness: Brightness.dark)),
+            child: CupertinoActivityIndicator(radius: 30));
   }
 }
