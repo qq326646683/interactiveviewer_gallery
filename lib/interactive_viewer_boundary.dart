@@ -11,8 +11,8 @@ typedef ScaleChanged = void Function(double scale);
 /// [InteractiveViewer.onInteractionEnd] callback.
 class InteractiveViewerBoundary extends StatefulWidget {
   const InteractiveViewerBoundary({
-    @required this.child,
-    @required this.boundaryWidth,
+    required this.child,
+    required this.boundaryWidth,
     this.controller,
     this.onScaleChanged,
     this.onLeftBoundaryHit,
@@ -31,23 +31,23 @@ class InteractiveViewerBoundary extends StatefulWidget {
   final double boundaryWidth;
 
   /// The [TransformationController] for the [InteractiveViewer].
-  final TransformationController controller;
+  final TransformationController? controller;
 
   /// Called when the scale changed after an interaction ended.
-  final ScaleChanged onScaleChanged;
+  final ScaleChanged? onScaleChanged;
 
   /// Called when the left boundary has been hit after an interaction ended.
-  final VoidCallback onLeftBoundaryHit;
+  final VoidCallback? onLeftBoundaryHit;
 
   /// Called when the right boundary has been hit after an interaction ended.
-  final VoidCallback onRightBoundaryHit;
+  final VoidCallback? onRightBoundaryHit;
 
   /// Called when no boundary has been hit after an interaction ended.
-  final VoidCallback onNoBoundaryHit;
+  final VoidCallback? onNoBoundaryHit;
 
-  final double maxScale;
+  final double? maxScale;
 
-  final double minScale;
+  final double? minScale;
 
   @override
   InteractiveViewerBoundaryState createState() =>
@@ -55,9 +55,9 @@ class InteractiveViewerBoundary extends StatefulWidget {
 }
 
 class InteractiveViewerBoundaryState extends State<InteractiveViewerBoundary> {
-  TransformationController _controller;
+  TransformationController? _controller;
 
-  double _scale;
+  double? _scale;
 
   @override
   void initState() {
@@ -68,14 +68,14 @@ class InteractiveViewerBoundaryState extends State<InteractiveViewerBoundary> {
 
   @override
   void dispose() {
-    _controller.dispose();
+    _controller!.dispose();
 
     super.dispose();
   }
 
   void _updateBoundaryDetection() {
 
-    final double scale = _controller.value.row0[0];
+    final double scale = _controller!.value.row0[0];
 
     if (_scale != scale) {
       // the scale changed
@@ -88,7 +88,7 @@ class InteractiveViewerBoundaryState extends State<InteractiveViewerBoundary> {
       return;
     }
 
-    final double xOffset = _controller.value.row0[3];
+    final double xOffset = _controller!.value.row0[3];
     final double boundaryWidth = widget.boundaryWidth;
     final double boundaryEnd = boundaryWidth * scale;
     final double xPos = boundaryEnd + xOffset;
@@ -107,8 +107,8 @@ class InteractiveViewerBoundaryState extends State<InteractiveViewerBoundary> {
   @override
   Widget build(BuildContext context) {
     return InteractiveViewer(
-      maxScale: widget.maxScale,
-      minScale: widget.minScale,
+      maxScale: widget.maxScale!,
+      minScale: widget.minScale!,
       transformationController: _controller,
       onInteractionEnd: (_) => _updateBoundaryDetection(),
       child: widget.child,

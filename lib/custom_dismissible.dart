@@ -5,7 +5,7 @@ import 'package:flutter/material.dart';
 /// Similar to [Dismissible] with some adjustments.
 class CustomDismissible extends StatefulWidget {
   const CustomDismissible({
-    @required this.child,
+    required this.child,
     this.onDismissed,
     this.dismissThreshold = 0.2,
     this.enabled = true,
@@ -13,7 +13,7 @@ class CustomDismissible extends StatefulWidget {
 
   final Widget child;
   final double dismissThreshold;
-  final VoidCallback onDismissed;
+  final VoidCallback? onDismissed;
   final bool enabled;
 
   @override
@@ -21,10 +21,10 @@ class CustomDismissible extends StatefulWidget {
 }
 
 class _CustomDismissibleState extends State<CustomDismissible> with SingleTickerProviderStateMixin {
-  AnimationController _animateController;
-  Animation<Offset> _moveAnimation;
-  Animation<double> _scaleAnimation;
-  Animation<Decoration> _opacityAnimation;
+  late AnimationController _animateController;
+  late Animation<Offset> _moveAnimation;
+  late Animation<double> _scaleAnimation;
+  late Animation<Decoration> _opacityAnimation;
 
   double _dragExtent = 0;
   bool _dragUnderway = false;
@@ -81,7 +81,7 @@ class _CustomDismissibleState extends State<CustomDismissible> with SingleTicker
     _dragUnderway = true;
 
     if (_animateController.isAnimating) {
-      _dragExtent = _animateController.value * context.size.height * _dragExtent.sign;
+      _dragExtent = _animateController.value * context.size!.height * _dragExtent.sign;
       _animateController.stop();
     } else {
       _dragExtent = 0.0;
@@ -95,7 +95,7 @@ class _CustomDismissibleState extends State<CustomDismissible> with SingleTicker
       return;
     }
 
-    final double delta = details.primaryDelta;
+    final double delta = details.primaryDelta!;
     final double oldDragExtent = _dragExtent;
 
     if (_dragExtent + delta < 0) {
@@ -109,7 +109,7 @@ class _CustomDismissibleState extends State<CustomDismissible> with SingleTicker
     }
 
     if (!_animateController.isAnimating) {
-      _animateController.value = _dragExtent.abs() / context.size.height;
+      _animateController.value = _dragExtent.abs() / context.size!.height;
     }
   }
 
