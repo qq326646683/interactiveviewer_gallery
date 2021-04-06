@@ -42,6 +42,7 @@ class InteractiveviewDemoPage extends StatefulWidget {
 
 class _InteractiveviewDemoPageState extends State<InteractiveviewDemoPage> {
   List<DemoSourceEntity> sourceList = [
+    DemoSourceEntity(0, 'image', 'http://file.jinxianyun.com/inter_06.jpg'),
     DemoSourceEntity(1, 'image', 'http://file.jinxianyun.com/inter_05.jpg'),
     DemoSourceEntity(2, 'image', 'http://file.jinxianyun.com/inter_02.jpg'),
     DemoSourceEntity(3, 'image', 'http://file.jinxianyun.com/inter_03.gif'),
@@ -107,6 +108,9 @@ class _InteractiveviewDemoPageState extends State<InteractiveviewDemoPage> {
             sources: sourceList,
             initIndex: sourceList.indexOf(source),
             itemBuilder: itemBuilder,
+            onPageChanged: (int pageIndex) {
+              print("nell-pageIndex:$pageIndex");
+            },
           ),
         ),
       ),
@@ -150,22 +154,18 @@ class _DemoImageItemState extends State<DemoImageItem> {
 
   @override
   Widget build(BuildContext context) {
-    return Stack(
-      children: <Widget>[
-        GestureDetector(
-          onTap: () => Navigator.of(context).pop(),
-        ),
-        Align(
-          alignment: Alignment.center,
-          child: Hero(
-            tag: widget.source.id,
-            child: CachedNetworkImage(
-              imageUrl: widget.source.url,
-              fit: BoxFit.contain,
-            ),
+    return GestureDetector(
+      behavior: HitTestBehavior.opaque,
+      onTap: () => Navigator.of(context).pop(),
+      child: Center(
+        child: Hero(
+          tag: widget.source.id,
+          child: CachedNetworkImage(
+            imageUrl: widget.source.url,
+            fit: BoxFit.contain,
           ),
         ),
-      ],
+      ),
     );
   }
 }

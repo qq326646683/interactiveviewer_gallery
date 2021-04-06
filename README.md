@@ -45,6 +45,9 @@ void _openGallery(DemoSourceEntity source) {
           sources: sourceList,
           initIndex: sourceList.indexOf(source),
           itemBuilder: itemBuilder,
+          onPageChanged: (int pageIndex) {
+            print("nell-pageIndex:$pageIndex");
+          },
       ),
     ),
   );

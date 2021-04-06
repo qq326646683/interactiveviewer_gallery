@@ -1,5 +1,10 @@
 #
 
+## 0.5.0 - 06.04.2021
+
+* add onPageChanged
+* optimize the position of double-click to enlarge
+
 ## 0.4.0 - 12.03.2021
 
 * support null safe

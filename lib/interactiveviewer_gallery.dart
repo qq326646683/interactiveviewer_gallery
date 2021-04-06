@@ -24,6 +24,7 @@ class InteractiveviewerGallery<T> extends StatefulWidget {
     required this.itemBuilder,
     this.maxScale = 2.5,
     this.minScale = 1.0,
+    this.onPageChanged,
   });
 
   /// The sources to show.
@@ -38,6 +39,9 @@ class InteractiveviewerGallery<T> extends StatefulWidget {
   final double maxScale;
 
   final double minScale;
+
+  final ValueChanged<int>? onPageChanged;
+
 
   @override
   _TweetSourceGalleryState createState() => _TweetSourceGalleryState();
@@ -169,6 +173,7 @@ class _TweetSourceGalleryState extends State<InteractiveviewerGallery> with Sing
     setState(() {
       currentIndex = page;
     });
+    widget.onPageChanged!(page);
     if (_transformationController!.value != Matrix4.identity()) {
       // animate the reset for the transformation of the interactive viewer
 
@@ -223,20 +228,14 @@ class _TweetSourceGalleryState extends State<InteractiveviewerGallery> with Sing
     double targetScale = widget.minScale;
 
     if (currentScale <= widget.minScale) {
-      targetScale = widget.maxScale * 0.6;
+      targetScale = widget.maxScale * 0.7;
     }
 
-    double offSetX = targetScale == 1.0 ? 0.0 : -(_doubleTapLocalPosition.dx / MediaQuery.of(context).size.width) * (targetScale * 1.7 * MediaQuery.of(context).size.width) + MediaQuery.of(context).size.width;
-    if (offSetX > 0) offSetX = 0.0;
-    double offSetXBoundary = (1 - targetScale) * MediaQuery.of(context).size.width;
-    if (offSetX < offSetXBoundary) offSetX = offSetXBoundary;
-
-    double offSetY = targetScale == 1.0 ? 0.0 : -(_doubleTapLocalPosition.dy / MediaQuery.of(context).size.height) * (targetScale * 1.7 * MediaQuery.of(context).size.height) + MediaQuery.of(context).size.height;
-    if (offSetY > 0) offSetY = 0.0;
-    double offSetYBoundary = (1 - targetScale) * MediaQuery.of(context).size.height;
-    if (offSetY < offSetYBoundary) offSetY = offSetYBoundary;
+    double offSetX = targetScale == 1.0 ? 0.0 : - _doubleTapLocalPosition.dx * (targetScale - 1);
+    double offSetY = targetScale == 1.0 ? 0.0 : - _doubleTapLocalPosition.dy * (targetScale - 1);
 
     matrix = Matrix4.fromList([targetScale, matrix.row1.x, matrix.row2.x, matrix.row3.x, matrix.row0.y, targetScale, matrix.row2.y, matrix.row3.y, matrix.row0.z, matrix.row1.z, targetScale, matrix.row3.z, offSetX, offSetY, matrix.row2.w, matrix.row3.w]);
+
     _animation = Matrix4Tween(
       begin: _transformationController!.value,
       end: matrix,
