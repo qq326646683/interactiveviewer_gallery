@@ -1,6 +1,8 @@
 # interactiveviewer_gallery
 [![pub package](https://img.shields.io/pub/v/interactiveviewer_gallery.svg)](https://pub.dartlang.org/packages/interactiveviewer_gallery)
 
+[中文文档](./README_CH.md)
+
 A flutter library to show picture and video preview gallery
 support
 1. two-finger gesture zoom
