@@ -1,5 +1,8 @@
 #
 
+## 0.6.0 - 25.06.2021
+* fix nullable error
+
 ## 0.5.0 - 06.04.2021
 
 * add onPageChanged

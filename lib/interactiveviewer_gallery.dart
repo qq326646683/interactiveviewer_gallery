@@ -173,7 +173,7 @@ class _TweetSourceGalleryState extends State<InteractiveviewerGallery> with Sing
     setState(() {
       currentIndex = page;
     });
-    widget.onPageChanged!(page);
+    widget.onPageChanged?.call(page);
     if (_transformationController!.value != Matrix4.identity()) {
       // animate the reset for the transformation of the interactive viewer
 
